@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Talkify is a modern social media app that effortlessly blends real-time chatting with seamless social interactions. Whether you want to connect with friends, share updates, or join trending conversations, Talkify provides a dynamic and interactive platform for all your social needs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coderyuvan/Talkify.git"
+  },
+  "keywords": [
+    "MERN-Stack",
+    "ChatApplication",
+    "SocialMedia"
+  ],
+  "author": "Yuvan Grover",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coderyuvan/Talkify/issues"
+  },
+  "homepage": "https://github.com/coderyuvan/Talkify#readme"
+}

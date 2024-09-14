@@ -1,3 +1,4 @@
+# Talkify
 Talkify is a modern social media app that effortlessly blends real-time chatting with seamless social interactions.
 Whether you want to connect with friends, share updates, or join trending conversations, 
 Talkify provides a dynamic and interactive platform for all your social needs.

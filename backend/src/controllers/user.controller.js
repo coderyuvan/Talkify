@@ -10,10 +10,10 @@ const  generateAccessAndRefreshToken=async(userId)=>{
 
    try {
      const user= await User.findById(userId)
-     const AccessToken= await user.generateAccessToken()
-     const RefreshToken= await user.generateRefreshToken()
+     const AccessToken=   user.generateAccessToken()
+     const RefreshToken=   user.generateRefreshToken()
      
-     user.refreshToken = user.generateRefreshToken();
+     user.refreshToken = RefreshToken;
      await user.save({validateBeforeSave:false});
 
     
@@ -83,7 +83,7 @@ const loginUser=asyncHandler(async(req,res)=>{
         }
 
 
-    const {AccessToken,RefeshToken}= await generateAccessAndRefreshToken(user._id)
+    const {AccessToken,RefreshToken}= await generateAccessAndRefreshToken(user._id)
  
     const LoggedInUser= await User.findById(user._id).select("-password")
 
@@ -94,12 +94,12 @@ const loginUser=asyncHandler(async(req,res)=>{
 
       return res
       .status(200)
-      .cookie("refreshToken", RefeshToken, options)
+      .cookie("refreshToken", RefreshToken, options)
       .cookie("accessToken",AccessToken,options)
       .json(new ApiResponse (
         200,
         {
-        user:LoggedInUser,AccessToken,RefeshToken,
+        user:LoggedInUser,AccessToken,RefreshToken,
         },
         "User logged in successfully",
         ))
@@ -118,7 +118,7 @@ const logoutUser=asyncHandler(async(req,res)=>{
   
     const options={
         httpOnly:true,
-        secure:true,
+        secure:false,
       }
 
       return res

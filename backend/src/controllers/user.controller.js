@@ -145,7 +145,7 @@ const GetUserProfile=asyncHandler(async(req,res)=>{
     }
     return res.json(new ApiResponse (
         200,
-        user,
+        {},
         "User profile retrieved successfully",
         ))
 })
@@ -155,22 +155,22 @@ const editProfile=asyncHandler(async(req,res)=>{
     if(!bio || !gender) {
         throw new ApiError(400,"all fields are required")
     }
-    const profilePicPath=req.file?.path
+    let profilePicPath;
+    if(req.files&& Array.isArray(req.files. profilePicture)&& req.files. profilePicture.length>0){
+        profilePicPath= req.files. profilePicture[0].path;
+         
+       }
     if(!profilePicPath) {
         throw new ApiError(400,"profile picture is required")
     }
-    const profilePic=uploadOnClodinary(profilePicPath)
-    if(!profilePic.url) {
-        throw new ApiError(400,"profile picture upload failed")
-    }
-
+    const  profilePicture= await uploadOnClodinary(profilePicPath)
     const user=await User.findByIdAndUpdate(
         req.user?.id,
         {
             $set:{
                 bio:bio,
                 gender:gender,
-                profilePic:profilePic.url
+                profilePicture: profilePicture.url
             }
         },
         {

@@ -180,11 +180,109 @@ const addComment=asyncHandler(async(req,res)=>{
     )
 })
 
+const getCommentOfPost=asyncHandler(async(req,res)=>{
+    const postId=req.params.id
+    const post=await Post.findById(postId)
+    if(!post){
+        throw new ApiError(404,"post do not exsist")
+    }
+  const postComments=  await Comment
+    .find({post})
+    .sort({createdAt: -1})
+    .populate({
+        path:"author",
+        select:"username profilePicture"
+    })
+    if(!postComments){
+        throw new ApiError(404,"No comments found")   
+    }
+    return res
+    .status(200)
+    .json(new ApiResponse(
+        200,
+        postComments,
+        "All comments retrieved successfully",
+    ))
+})
+
+const deletePost=asyncHandler(async(req,res)=>{
+    const postId=req.params.id
+    const authorId=req.user.id
+    const post=await Post.findById(postId)
+    if(!post) {
+      throw new ApiError(404,"post do not exsist")
+    }
+    if(post.author.toString()!==authorId){
+        throw new ApiError(403,"You are not authorized to delete this post")
+    }
+    await Post.findByIdAndDelete(postId)
+    // deleting from posts array in user 
+    let user=User.findById(authorId
+    )
+    user.posts=user.posts.filter(id=>id.toString()!==postId)
+    await user.save()
+    //deleting comments of that posts
+    await Comment.deleteMany({post:postId})
+    return res
+   .status(200)
+   .json(new ApiResponse(
+        200,
+        post,
+        "Post deleted successfully",
+    ))
+})
+
+const BookMarkPosts=asyncHandler(async(req,res)=>{
+const postId=req.params.id
+ const authorId=req.user.id
+ const post=await Post.findById(postId)
+ if(!post) {
+    throw new ApiError(404,"post do not exsist")
+ }
+ let user= await User.findById(authorId)
+ if(user.bookmarks.includes(post._id)){
+      await User.updateOne(
+        {
+            $pull:{
+                bookmarks:post._id
+            }
+        }
+      )
+      await User.save()
+      return res
+       .status(200)
+       .json(new ApiResponse(
+            200,
+                post,
+                "Post unbookmarked successfully",
+            ))
+ }
+ await User.updateOne(
+    {
+        $addToSet:{
+            bookmarks:post._id
+        }
+    }
+  )
+  await User.save()
+  return res
+   .status(200)
+   .json(new ApiResponse(
+        200,
+            post,
+            "Post bookmarked successfully",
+        ))
+})
+
+
 export {
     addNewPost,
     getAllPost,
     getUserPost,
     LikePosts,
     DislikePosts,
-    addComment
+    addComment,
+    getCommentOfPost,
+    deletePost,
+    BookMarkPosts
 }

@@ -157,7 +157,7 @@ const addComment=asyncHandler(async(req,res)=>{
     }
     const comment=await Comment.create({
         text:text,
-        authorId:authorId,
+        author:authorId,
         postId:postId
     }).populate({
         path:"author",
@@ -217,7 +217,7 @@ const deletePost=asyncHandler(async(req,res)=>{
     }
     await Post.findByIdAndDelete(postId)
     // deleting from posts array in user 
-    let user=User.findById(authorId
+    let user= await User.findById(authorId
     )
     user.posts=user.posts.filter(id=>id.toString()!==postId)
     await user.save()
@@ -241,14 +241,14 @@ const postId=req.params.id
  }
  let user= await User.findById(authorId)
  if(user.bookmarks.includes(post._id)){
-      await User.updateOne(
+      await user.updateOne(
         {
             $pull:{
                 bookmarks:post._id
             }
         }
       )
-      await User.save()
+      await user.save()
       return res
        .status(200)
        .json(new ApiResponse(
@@ -257,14 +257,14 @@ const postId=req.params.id
                 "Post unbookmarked successfully",
             ))
  }
- await User.updateOne(
+ await user.updateOne(
     {
         $addToSet:{
             bookmarks:post._id
         }
     }
   )
-  await User.save()
+  await user.save()
   return res
    .status(200)
    .json(new ApiResponse(

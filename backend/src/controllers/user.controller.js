@@ -3,7 +3,7 @@ import {User} from "../models/user.model.js"
 import { ApiError } from "../utils/ApiError.js"
 import { uploadOnClodinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
- 
+import { Post } from "../models/post.model.js";
  
 
 const  generateAccessAndRefreshToken=async(userId)=>{
@@ -84,6 +84,16 @@ const loginUser=asyncHandler(async(req,res)=>{
 
 
     const {AccessToken,RefreshToken}= await generateAccessAndRefreshToken(user._id)
+
+    const populatedPosts = await Promise.all(
+        user.posts.map( async (postId) => {
+            const post = await Post.findById(postId);
+            if(post.author.equals(user._id)){
+                return post;
+            }
+            return null;
+        })
+    )
  
     const LoggedInUser= await User.findById(user._id).select("-password")
 

@@ -6,7 +6,7 @@ const router=Router()
 
 router.route("/register").post(registerUser)
 router.route("/login").post(loginUser)
-router.route("/logout").post(verifyJWT,logoutUser)
+router.route("/logout").get(verifyJWT,logoutUser)
 router.route("/:id/getUserProfile").get(verifyJWT,GetUserProfile)
 router.route("/edit/profile").post(verifyJWT,
    upload.fields([{

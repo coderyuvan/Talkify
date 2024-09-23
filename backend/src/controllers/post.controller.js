@@ -43,6 +43,7 @@ const addNewPost=asyncHandler(async(req,res)=>{
      .json(
         new ApiResponse(
             200,
+            post,
             "Post created successfully",
         )
      )
@@ -159,7 +160,8 @@ const addComment=asyncHandler(async(req,res)=>{
         text:text,
         author:authorId,
         postId:postId
-    }).populate({
+    }) 
+    await comment.populate({
         path:"author",
         select:"username profilePicture"
     })
@@ -174,7 +176,7 @@ const addComment=asyncHandler(async(req,res)=>{
     .json(
           new ApiResponse(
           200,
-          post,
+          comment,
           " Comment Added successfully",
           )
     )

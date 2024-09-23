@@ -19,7 +19,7 @@ router.route("/:id/comment").post(verifyJWT,addComment)
 
 router.route("/:id/comment/all").post(verifyJWT,getCommentOfPost)
 
-router.route("/delete/:id").post(verifyJWT,deletePost)
+router.route("/delete/:id").delete(verifyJWT,deletePost)
 
 router.route("/:id/bookmark").post(verifyJWT,BookMarkPosts)
 

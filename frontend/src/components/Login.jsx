@@ -5,6 +5,8 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
 import { Link ,useNavigate} from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setAuthUser } from '@/redux/authslice';
 const Login=()=> {
     const [input, setInput] = useState({
         email: "",
@@ -12,22 +14,26 @@ const Login=()=> {
     });
     const [loading,setLoading]=useState(false)
     const navigate = useNavigate();
+    const dispatch=useDispatch()
     const changeEventHandler = (e) => {
         setInput({ ...input, [e.target.name]: e.target.value });
     }
 
     const signupHandler = async(e)=>{
         e.preventDefault();
-        console.log(input);
+       
         
         try {
             setLoading(true)
-            const res= await axios.post("http://localhost:4004/api/v1/users/login",input,{
+            const res= await axios.post("http://localhost:4005/api/v1/users/login",input,{
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
             if(res.data.success){
+                dispatch(setAuthUser(res.data.user))
+                console.log(res.data.user);
+                
                 navigate("/")
                 toast.success(res.data.message)
                 setInput({
